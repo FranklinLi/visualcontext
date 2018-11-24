@@ -2,7 +2,6 @@ package com.example.franklin.visualcontext;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -11,11 +10,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.franklin.visualcontext.data.Place;
+import com.example.franklin.visualcontext.data.PlaceToTypeMapping;
+import com.example.franklin.visualcontext.data.restaurant.Menu;
+import com.example.franklin.visualcontext.data.restaurant.Restaurant;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.PlaceFilter;
@@ -26,7 +29,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Stores list of places that user is currently around.
      */
-    private List<String> likelyPlaceNames = new ArrayList<>();
+    private List<Place> likelyPlaces = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +78,22 @@ public class MainActivity extends AppCompatActivity implements
         mGeoDataClient = Places.getGeoDataClient(this);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
         checkPermissionsAndGetLikelyPlaceNames();
-        if (likelyPlaceNames.isEmpty()) {
+        if (likelyPlaces.isEmpty()) {
             //use this for demo/testing if no restaurants near
-            likelyPlaceNames.add("Popeyes");
+            likelyPlaces.add(new Restaurant("1", "Popeyes' Chicken", null, 2));
         }
-        Utils.show_list(this, likelyPlaceNames);
+        View placesView = Utils.show_place_names_list(this, likelyPlaces);
+        ((ListView) placesView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Place", likelyPlaces.get(position));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -98,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Call back after {@code requestPermissions} is called. Checks for the results of permission
-     * request check.
+     * request.
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)   {
@@ -121,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Calls API to find list of establishments close to current place.
-     * @return: list of establishment names
      */
     private void callPlaceDetectionApi() {
         PlaceFilter placeFilter = new PlaceFilter();
@@ -133,21 +145,31 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
-                            PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
+                            PlaceLikelihoodBufferResponse likelyPlaceResults = task.getResult();
 
                             // Set the count, handling cases where less than 5 entries are returned.
-                            int count = Math.min(likelyPlaces.getCount(), M_MAX_ENTRIES);
-                            List<String> mLikelyPlaceNames = new ArrayList<>();
-                            for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                            int count = Math.min(likelyPlaceResults.getCount(), M_MAX_ENTRIES);
+                            for (PlaceLikelihood placeLikelihood : likelyPlaceResults) {
+                                List placeTypes = placeLikelihood.getPlace().getPlaceTypes();
+                                //for now, just focusing on restaurants, generify this part if we
+                                // move on to other kinds of places.
+                                placeTypes.retainAll(PlaceToTypeMapping.placeToTypes.get(Restaurant.class));
+                                if (placeTypes.isEmpty()) {
+                                    return;
+                                }
+                                com.google.android.gms.location.places.Place googlePlace =
+                                        placeLikelihood.getPlace();
+                                //menu null for now, will load when loading into DetailActivity
+                                Place place = new Restaurant(googlePlace.getId(), googlePlace
+                                        .getName(), null, googlePlace.getPriceLevel());
                                 // Build a list of likely places to show the user.
-                                mLikelyPlaceNames.add((String) placeLikelihood.getPlace().getName());
-                                if (mLikelyPlaceNames.size() == count ) {
+                                likelyPlaces.add(place);
+                                if (likelyPlaces.size() == count ) {
                                     break;
                                 }
                             }
-                            likelyPlaceNames = mLikelyPlaceNames;
                             // Release the place likelihood buffer, to avoid memory leaks.
-                            likelyPlaces.release();
+                            likelyPlaceResults.release();
                         } else {
                             Log.e(TAG, "Exception: %s", task.getException());
                         }
