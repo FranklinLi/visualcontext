@@ -1,0 +1,51 @@
+{
+    "id": "abc",
+    "name": "Popeyes Chicken",
+    "menu":
+    [
+      {
+        "name": "3 piece chicken tender combo",
+        "ingredients":
+          [
+            "fried chicken",
+            "mashed potatoes",
+            "fries",
+            "fountain drink"
+          ],
+          "price": 7.99
+      },
+      {
+        "name": "5 piece chicken tender combo",
+        "ingredients":
+        [
+          "fried chicken",
+          "mashed potatoes",
+          "fries",
+          "fountain drink"
+        ],
+        "price": 9.99
+      },
+      {
+        "name": "6 piece chicken nuggets combo",
+        "ingredients":
+        [
+          "fried chicken",
+          "mashed potatoes",
+          "fries",
+          "fountain drink"
+        ],
+        "price": 6.99
+      },
+      {
+        "name": "9 piece chicken nuggets combo",
+        "ingredients":
+        [
+          "fried chicken",
+          "mashed potatoes",
+          "fries",
+          "fountain drink"
+        ],
+        "price": 7.99
+      }
+    ]
+  }

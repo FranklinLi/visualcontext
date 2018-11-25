@@ -17,7 +17,7 @@ import lombok.Setter;
 public class Restaurant extends Place {
 
     /**
-     * Restaurant menu
+     * Restaurant menu. Returned as place details
      */
     @Setter
     @Getter

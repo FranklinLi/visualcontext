@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements
         checkPermissionsAndGetLikelyPlaceNames();
         if (likelyPlaces.isEmpty()) {
             //use this for demo/testing if no restaurants near
-            likelyPlaces.add(new Restaurant("1", "Popeyes' Chicken", null, 2));
+            likelyPlaces.add(new Restaurant("abc", "Popeyes' Chicken", null, 2));
         }
         View placesView = Utils.show_place_names_list(this, likelyPlaces);
         ((ListView) placesView).setOnItemClickListener(new AdapterView.OnItemClickListener() {

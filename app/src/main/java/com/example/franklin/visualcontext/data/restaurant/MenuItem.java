@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * Represents a menu item for a restaurant
@@ -27,5 +28,6 @@ public class MenuItem {
      * name of the menu item
      */
     @Getter
+    @NonNull
     private final String name;
 }
