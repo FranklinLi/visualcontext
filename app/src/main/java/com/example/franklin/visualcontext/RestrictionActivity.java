@@ -44,10 +44,6 @@ public class RestrictionActivity extends AppCompatActivity implements View.OnCli
                 Intent intent = new Intent(this, PreferencePageActivity.class);
                 String message = "pork";
                 intent.putExtra(EXTRA_MESSAGE, message);
-
-
-
-
                 startActivity(intent);
                 break;
             case R.id.button4:

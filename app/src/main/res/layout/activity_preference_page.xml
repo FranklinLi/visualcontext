@@ -65,6 +65,18 @@
             android:text="Dislike Strongly"
             app:layout_constraintTop_toBottomOf="@+id/radioButton"
             tools:layout_editor_absoluteX="6dp" />
+
+
     </RadioGroup>
+
+    <Button
+        android:id="@+id/button9"
+        android:layout_width="0dp"
+        android:layout_height="88dp"
+        android:layout_weight="1"
+        android:text="Submit"
+        app:layout_constraintBottom_toBottomOf="@+id/radioGroup2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
