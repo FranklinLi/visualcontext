@@ -6,6 +6,7 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * Represents each diet restriction that the user can set.
@@ -30,5 +31,6 @@ public enum DietRestrictions {
     /**
      * Ingredients that the diet restriction restricts from
      */
-    private Set<String> restrictedIngredients;
+    @NonNull
+    private final Set<String> restrictedIngredients;
 }

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.franklin.visualcontext.data.restaurant.PreferenceIngredient;
+
 
 /**
  * Page that lists all the food ingrediente you can set preferences for
@@ -33,25 +35,25 @@ public class PreferenceListActivity extends AppCompatActivity implements View.On
         switch (v.getId()) {
             case R.id.button:
                 Intent intent = new Intent(this, PreferenceLikertScaleActivity.class);
-                message = "pork";
+                message = PreferenceIngredient.PORK.toString();
                 intent.putExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE, message);
                 startActivity(intent);
                 break;
             case R.id.button4:
                 intent = new Intent(this, PreferenceLikertScaleActivity.class);
-                message = "chicken";
+                message = PreferenceIngredient.CHICKEN.toString();
                 intent.putExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE, message);
                 startActivity(intent);
                 break;
             case R.id.button5:
                 intent = new Intent(this, PreferenceLikertScaleActivity.class);
-                message = "beef";
+                message = PreferenceIngredient.BEEF.toString();
                 intent.putExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE, message);
                 startActivity(intent);
                 break;
             case R.id.button6:
                 intent = new Intent(this, PreferenceLikertScaleActivity.class);
-                message = "seafood";
+                message = PreferenceIngredient.SEAFOOD.toString();
                 intent.putExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE, message);
                 startActivity(intent);
                 break;

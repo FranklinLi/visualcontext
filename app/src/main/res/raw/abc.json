@@ -15,13 +15,10 @@
           "price": 7.99
       },
       {
-        "name": "5 piece chicken tender combo",
+        "name": "mashed potatoes",
         "ingredients":
         [
-          "fried chicken",
-          "mashed potatoes",
-          "fries",
-          "fountain drink"
+          "mashed potatoes"
         ],
         "price": 9.99
       },
