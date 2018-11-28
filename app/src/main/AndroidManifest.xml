@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PreferenceActivity"
+            android:name=".RestrictionListActivity"
             android:parentActivityName=".MainActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -34,7 +34,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".RestrictionActivity"
+            android:name=".PreferenceListActivity"
             android:parentActivityName=".MainActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -43,8 +43,8 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".PreferencePageActivity"
-            android:parentActivityName=".RestrictionActivity"></activity>
+            android:name=".PreferenceLikertScaleActivity"
+            android:parentActivityName=".PreferenceListActivity"></activity>
         <activity
             android:name=".DetailsActivity"
             android:label="@string/title_activity_details"

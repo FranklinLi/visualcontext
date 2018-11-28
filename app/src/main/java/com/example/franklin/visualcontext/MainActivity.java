@@ -2,6 +2,7 @@ package com.example.franklin.visualcontext;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -17,7 +18,8 @@ import android.widget.Toast;
 
 import com.example.franklin.visualcontext.data.Place;
 import com.example.franklin.visualcontext.data.PlaceToTypeMapping;
-import com.example.franklin.visualcontext.data.restaurant.Menu;
+import com.example.franklin.visualcontext.data.restaurant.PreferenceIngredient;
+import com.example.franklin.visualcontext.data.restaurant.PreferenceLevels;
 import com.example.franklin.visualcontext.data.restaurant.Restaurant;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
@@ -28,18 +30,22 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.franklin.visualcontext.Constants.JSON_PREFERENCES_KEY;
+import static com.example.franklin.visualcontext.Constants.JSON_RESTRICTIONS_KEY;
 
 public class MainActivity extends AppCompatActivity implements
         View.OnClickListener {
@@ -75,19 +81,14 @@ public class MainActivity extends AppCompatActivity implements
      */
     private List<Place> likelyPlaces = new ArrayList<>();
 
-
-    File root = android.os.Environment.getExternalStorageDirectory();
-    File dir = new File (root.getAbsolutePath());
-    File file;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button one = findViewById(R.id.button2);
+        Button one = findViewById(R.id.preferences);
         one.setOnClickListener(this); // calling onClick() method
-        Button two = findViewById(R.id.button3);
+        Button two = findViewById(R.id.restrictions);
         two.setOnClickListener(this);
 
         mGeoDataClient = Places.getGeoDataClient(this);
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements
     private void checkPermissionsAndGetLikelyPlaceNames() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //permission not already granted
-            requestPermissions( new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
         } else {
             callPlaceDetectionApi();
         }
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements
      * request.
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)   {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case LOCATION_REQUEST: {
                 // If request is cancelled, the result arrays are empty.
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements
                                         .getName(), null, googlePlace.getPriceLevel());
                                 // Build a list of likely places to show the user.
                                 likelyPlaces.add(place);
-                                if (likelyPlaces.size() == count ) {
+                                if (likelyPlaces.size() == count) {
                                     break;
                                 }
                             }
@@ -193,86 +194,50 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }
 
+    /**
+     * Writes to a preferences file that stores user restrictions and preferences if it does not
+     * already exist
+     */
+    private void createPreferencesFileIfEmpty() {
+        File file = new File(getApplicationContext().getFilesDir(), Constants.USER_PREFS_FILE_NAME);
+        if (file.length() == 0) {
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                JSONObject jsonObj = new JSONObject();
+                JSONObject prefObject = new JSONObject();
+                JSONArray restrictionArray = new JSONArray();
+                //populate preferences with default preference levels
+                for (PreferenceIngredient ingredient : PreferenceIngredient.values()) {
+                    prefObject.put(ingredient.toString(), ingredient.getPrefLevel().toString());
+                }
+                jsonObj.put(JSON_PREFERENCES_KEY, prefObject);
+                jsonObj.put(JSON_RESTRICTIONS_KEY, restrictionArray);
+                out.write(jsonObj.toString().getBytes());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                Log.e("MYAPP", "unexpected JSON exception", e);
+            }
+        }
+    }
+
+    /**
+     * Handles clicking of buttons on main activity
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
-
-
-                case R.id.button3:
-                    file = new File(dir, "preference.json");
-                    JSONObject jsonObj = new JSONObject();
-                    try {
-
-                        if (file.length()==0){
-                            FileOutputStream f = new FileOutputStream(file);
-                            PrintWriter pw = new PrintWriter(f);
-                            jsonObj.put("pork","neutral");
-                            jsonObj.put("chicken","neutral");
-                            jsonObj.put("beef","neutral");
-                            jsonObj.put("seafood","neutral");
-                            jsonObj.put("peanut allergies", "no");
-                            jsonObj.put("halal", "no");
-                            jsonObj.put("kosher", "no");
-                            jsonObj.put("vegetarian", "no");
-                            jsonObj.put("glutenfree", "no");
-                            pw.println(jsonObj.toString());
-                            pw.flush();
-                            pw.close();
-                            f.close();
-                        }
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    catch (JSONException e) {
-                        Log.e("MYAPP", "unexpected JSON exception", e);
-                        // Do something to recover ... or kill the app.
-                    }
-                    Intent intent = new Intent(this, PreferenceActivity.class);
-                    startActivity(intent);
+            case R.id.restrictions:
+                createPreferencesFileIfEmpty();
+                Intent intent = new Intent(this, RestrictionListActivity.class);
+                startActivity(intent);
                 break;
-                case R.id.button2:
-                    file = new File(dir, "preference.json");
-                    JSONObject jsonObj1 = new JSONObject();
-                    try {
-
-                        if (file.length()==0){
-                            FileOutputStream f = new FileOutputStream(file);
-                            PrintWriter pw = new PrintWriter(f);
-                            jsonObj1.put("pork","neutral");
-                            jsonObj1.put("chicken","neutral");
-                            jsonObj1.put("beef","neutral");
-                            jsonObj1.put("seafood","neutral");
-                            jsonObj1.put("peanut allergies", "no");
-                            jsonObj1.put("halal", "no");
-                            jsonObj1.put("kosher", "no");
-                            jsonObj1.put("vegetarian", "no");
-                            jsonObj1.put("glutenfree", "no");
-                            pw.println(jsonObj1.toString());
-                            pw.flush();
-                            pw.close();
-                            f.close();
-                        }
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    catch (JSONException e) {
-                        Log.e("MYAPP", "unexpected JSON exception", e);
-                        // Do something to recover ... or kill the app.
-                    }
-                    intent = new Intent(this, RestrictionActivity.class);
-                    startActivity(intent);
-                // do your code
+            case R.id.preferences:
+                createPreferencesFileIfEmpty();
+                intent = new Intent(this, PreferenceListActivity.class);
+                startActivity(intent);
                 break;
-
             default:
                 break;
         }

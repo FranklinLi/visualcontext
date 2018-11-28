@@ -9,9 +9,4 @@ public interface PlaceDetails {
      * Gets the details of the place used for displaying details to the user.
      */
     Object getPlaceDetails();
-
-    /**
-     * Returns the class type of place details object
-     */
-    Class getPlaceDetailType();
 }

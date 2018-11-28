@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PreferencePageActivity"
+    tools:context=".PreferenceLikertScaleActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <RadioGroup
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/likeStrongly"
             android:layout_width="400dp"
             android:layout_height="80dp"
             android:layout_marginTop="8dp"
@@ -27,7 +27,7 @@
             tools:layout_editor_absoluteX="6dp" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/like"
             android:layout_width="400dp"
             android:layout_height="80dp"
             android:layout_marginTop="8dp"
@@ -37,7 +37,7 @@
             tools:layout_editor_absoluteX="6dp" />
 
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/neutral"
             android:layout_width="400dp"
             android:layout_height="80dp"
             android:layout_marginTop="8dp"
@@ -47,7 +47,7 @@
             tools:layout_editor_absoluteX="6dp" />
 
         <RadioButton
-            android:id="@+id/radioButton5"
+            android:id="@+id/dislike"
             android:layout_width="400dp"
             android:layout_height="80dp"
             android:layout_marginTop="8dp"
@@ -57,7 +57,7 @@
             tools:layout_editor_absoluteX="6dp" />
 
         <RadioButton
-            android:id="@+id/radioButton6"
+            android:id="@+id/dislikeStrongly"
             android:layout_width="400dp"
             android:layout_height="80dp"
             android:layout_marginTop="8dp"

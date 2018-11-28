@@ -29,10 +29,6 @@ public abstract class Place implements PlaceDetails, Serializable {
     /**
      * Returns this place's details to be displayed
      */
+    @Override
     public abstract Object getPlaceDetails();
-
-    /**
-     * Returns this place's place detail type
-     */
-    public abstract Class getPlaceDetailType();
 }

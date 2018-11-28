@@ -45,12 +45,4 @@ public class Restaurant extends Place {
     public Object getPlaceDetails() {
         return menu;
     }
-
-    /**
-     * Restaurant's place detail type is {@link Menu}
-     */
-    @Override
-    public Class getPlaceDetailType() {
-        return menu.getClass();
-    }
 }
