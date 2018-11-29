@@ -46,15 +46,17 @@ public class DetailsActivity extends AppCompatActivity {
             try (InputStream in = getResources().openRawResource(getResources().getIdentifier
                     (place.getId(), "raw", getPackageName()))) {
                 menu = Utils.readMenuFromJSON(in);
+                menu = Menu.filterAndSortMenuItems(menu,  new File(getFilesDir(),
+                        USER_PREFS_FILE_NAME));
             } catch (IOException e) {
+                detailsFound = false;
                 e.printStackTrace();
             } catch (Resources.NotFoundException ex) {
                 detailsFound = false;
                 Toast.makeText(this, "No menu found for this restaurant", Toast.LENGTH_LONG).show();
             }
-            ((Restaurant) place).setMenu(Menu.filterAndSortMenuItems(menu, new File(getFilesDir(),
-                    USER_PREFS_FILE_NAME)));
 
+            ((Restaurant) place).setMenu(menu);
         }
         if (detailsFound) {
             Utils.show_place_details(this, place);

@@ -1,5 +1,7 @@
 package com.example.franklin.visualcontext.data.restaurant;
 
+import android.util.Log;
+
 import org.json.JSONException;
 
 import java.io.File;
@@ -7,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -38,10 +41,17 @@ public class Menu {
      * @return the sorted and filtered menu
      */
     public static Menu filterAndSortMenuItems(Menu menu, File file) {
-        PreferenceMetadata metadata = null;
+        PreferenceMetadata metadata;
+        List<DietRestrictions> dietRestrictions = new ArrayList<>();
+        List<PreferenceIngredient> preferenceIngredients =Arrays.asList(PreferenceIngredient
+                .values());
         try (FileInputStream in = new FileInputStream(file)) {
             metadata = PreferenceMetadata.createFromJson(in);
+            dietRestrictions = metadata.getDietRestrictions();
+            preferenceIngredients = metadata.getPreferenceIngredients();
         } catch (FileNotFoundException e) {
+            Log.d(Menu.class.getSimpleName(), "could not find preferences file, using empty diet " +
+                    "restrictions and 0 for all preference scores");
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,7 +59,6 @@ public class Menu {
             e.printStackTrace();
         }
         //First filter out any menu items that don't fit at least one diet restriction
-        List<DietRestrictions> dietRestrictions = metadata.getDietRestrictions();
         List<MenuItem> rawMenuItems = menu.getMenuItems();
         List<MenuItem> restrictionFilteredMenuItems = new ArrayList<>();
         for (MenuItem menuItem: rawMenuItems) {
@@ -68,11 +77,10 @@ public class Menu {
         List<MenuItem> sortedAndFilteredMenuItems = restrictionFilteredMenuItems;
         //calculates preference scores
         for (MenuItem menuItem : sortedAndFilteredMenuItems) {
-            menuItem.updatePreferenceScore(metadata.getPreferenceIngredients());
+            menuItem.updatePreferenceScore(preferenceIngredients);
         }
         //sorts based on preference scores in descending order
-        Collections.sort(sortedAndFilteredMenuItems);
-        Collections.reverse(sortedAndFilteredMenuItems);
+        Collections.sort(sortedAndFilteredMenuItems, Collections.<MenuItem>reverseOrder());
         return new Menu(sortedAndFilteredMenuItems);
     }
 }

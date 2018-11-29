@@ -94,23 +94,9 @@ public class MainActivity extends AppCompatActivity implements
         mGeoDataClient = Places.getGeoDataClient(this);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
         checkPermissionsAndGetLikelyPlaceNames();
-        if (likelyPlaces.isEmpty()) {
-            //use this for demo/testing if no restaurants near
-            likelyPlaces.add(new Restaurant("abc", "Popeyes' Chicken", null, 2));
-            likelyPlaces.add(new Restaurant("bcd", "Burger King", null, 2));
-        }
-        View placesView = Utils.show_place_names_list(this, likelyPlaces);
-        ((ListView) placesView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("Place", likelyPlaces.get(position));
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+        //this one is for demoing purposes for a menu we hardcoded
+        likelyPlaces.add(new Restaurant("abc", "Popeyes' Chicken", null, 2));
+        displayPlaces();
     }
 
     /**
@@ -189,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements
                             }
                             // Release the place likelihood buffer, to avoid memory leaks.
                             likelyPlaceResults.release();
+                            Log.d(TAG, "api call complete");
+                            displayPlaces();
                         } else {
                             Log.e(TAG, "Exception: %s", task.getException());
                         }
@@ -196,6 +184,22 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }
 
+    private void displayPlaces() {
+        //displays list
+        View placesView = Utils.show_place_names_list(MainActivity.this,
+                likelyPlaces);
+        ((ListView) placesView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Place", likelyPlaces.get(position));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+    }
     /**
      * Writes to a preferences file that stores user restrictions and preferences if it does not
      * already exist
