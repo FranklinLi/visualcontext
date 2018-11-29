@@ -154,26 +154,28 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void callPlaceDetectionApi() {
         PlaceFilter placeFilter = new PlaceFilter();
-        //only look for places open now
-        placeFilter.isRestrictedToPlacesOpenNow();
-        @SuppressLint("MissingPermission") Task<PlaceLikelihoodBufferResponse> placeResult = mPlaceDetectionClient.getCurrentPlace(placeFilter);
+        @SuppressLint("MissingPermission") final Task<PlaceLikelihoodBufferResponse> placeResult = mPlaceDetectionClient.getCurrentPlace(placeFilter);
         placeResult.addOnCompleteListener
                 (new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
                     @Override
                     public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
+                            Log.d(TAG, "Google API getCurrentPlace call successful");
                             PlaceLikelihoodBufferResponse likelyPlaceResults = task.getResult();
 
-                            // Set the count, handling cases where less than 5 entries are returned.
+                            // Set the count, handling cases where less than max entries are returned.
                             int count = Math.min(likelyPlaceResults.getCount(), M_MAX_ENTRIES);
                             for (PlaceLikelihood placeLikelihood : likelyPlaceResults) {
+                                Log.d(TAG, "found place " + placeLikelihood.getPlace().getName() + " with likelihood " + placeLikelihood.getLikelihood());
+
                                 List placeTypes = placeLikelihood.getPlace().getPlaceTypes();
                                 //for now, just focusing on restaurants, generify this part if we
                                 // move on to other kinds of places.
                                 placeTypes.retainAll(PlaceToTypeMapping.placeToTypes.get(Restaurant.class));
                                 if (placeTypes.isEmpty()) {
-                                    return;
+                                    continue;
                                 }
+                                Log.d(TAG, "place " + placeLikelihood.getPlace().getName() + " will be displayed");
                                 com.google.android.gms.location.places.Place googlePlace =
                                         placeLikelihood.getPlace();
                                 //menu null for now, will load when loading into DetailActivity
