@@ -1,46 +1,83 @@
 {
     "id": "abc",
-    "name": "Popeyes Chicken",
+    "name": "PERFECT Chinese Restaurant",
     "menu":
     [
       {
-        "name": "3 piece chicken tender combo",
+        "name": "beef in Chili Sauce",
         "ingredients":
           [
-            "fried chicken",
-            "mashed potatoes",
-            "fries",
-            "fountain drink"
+            "beef",
+            "green onion",
+            "chili"
           ],
-          "price": 7.99
+          "price": 12.95
       },
       {
-        "name": "mashed potatoes",
+        "name": "fish fillet with sweet and sour sauce",
         "ingredients":
         [
-          "mashed potatoes"
+          "fish",
+          "onion"
+        ],
+        "price": 12.99
+      },
+      {
+        "name": "sauteed shrimp",
+        "ingredients":
+        [
+          "shrimp"
+        ],
+        "price": 13.99
+      },
+      {
+        "name": "diced chicken with chili",
+        "ingredients":
+        [
+          "peanut",
+          "chicken",
+          "broccoli"
         ],
         "price": 9.99
       },
       {
-        "name": "6 piece chicken nuggets combo",
+        "name": "general tao chicken",
         "ingredients":
         [
-          "fried chicken",
-          "mashed potatoes",
-          "fries",
-          "fountain drink"
+          "chicken",
+          "broccoli"
         ],
-        "price": 6.99
+        "price": 10.99
       },
       {
-        "name": "9 piece chicken nuggets combo",
+        "name": "sweet and sour pork with pineapple",
         "ingredients":
         [
-          "fried chicken",
-          "mashed potatoes",
-          "fries",
-          "fountain drink"
+          "pineapple",
+          "pork",
+          "green pepper"
+        ],
+        "price": 10.99
+      },
+      {
+        "name": "chinese mushroom with vegetables",
+        "ingredients":
+        [
+          "mushroom",
+          "broccoli",
+          "onion"
+        ],
+        "price": 9.99
+      },
+      {
+        "name": "BBQ pork fried rice",
+        "ingredients":
+        [
+          "pork",
+          "carrot",
+          "rice",
+          "egg",
+          "soy sauce"
         ],
         "price": 7.99
       }

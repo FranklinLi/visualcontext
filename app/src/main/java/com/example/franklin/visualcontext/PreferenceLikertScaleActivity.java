@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 
 import com.example.franklin.visualcontext.data.restaurant.PreferenceLevels;
 
@@ -13,10 +14,15 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 
 import static com.example.franklin.visualcontext.Constants.JSON_PREFERENCES_KEY;
@@ -38,6 +44,45 @@ public class PreferenceLikertScaleActivity extends AppCompatActivity implements 
 
         Intent intent = getIntent();
         ingredientName = intent.getStringExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE);
+
+        final RadioButton likeStrongly = (RadioButton)findViewById(R.id.likeStrongly);
+        final RadioButton like = (RadioButton)findViewById(R.id.like);
+        final RadioButton neutral = (RadioButton)findViewById(R.id.neutral);
+        final RadioButton dislike = (RadioButton)findViewById(R.id.dislike);
+        final RadioButton dislikeStrongly = (RadioButton)findViewById(R.id.dislikeStrongly);
+        File file = new File(getApplicationContext().getFilesDir(), Constants.USER_PREFS_FILE_NAME);
+
+        try {
+            InputStream is = new FileInputStream(file);
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is,"UTF-8"));
+            String line;
+
+            while ( (line = rd.readLine()) != null ){
+                if(line.matches(".*"+ingredientName+"\":\"LIKE_STRONGLY"+".*")){ //--regex of what to search--
+                    likeStrongly.setChecked(true);
+                }
+                else if(line.matches(".*"+ingredientName+"\":\"LIKE\""+".*")){ //--regex of what to search--
+                    like.setChecked(true);
+                }
+                else if(line.matches(".*"+ingredientName+"\":\"NEUTRAL"+".*")){ //--regex of what to search--
+                    neutral.setChecked(true);
+                }
+                else if(line.matches(".*"+ingredientName+"\":\"DISLIKE\""+".*")){ //--regex of what to search--
+                    dislike.setChecked(true);
+                }
+                else if(line.matches(".*"+ingredientName+"\":\"DISLIKE_STRONGLY"+".*")){ //--regex of what to search--
+                    dislikeStrongly.setChecked(true);
+                }
+
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         Button one = (Button) findViewById(R.id.button9);
         one.setOnClickListener(this);

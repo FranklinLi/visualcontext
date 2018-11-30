@@ -22,7 +22,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 import static com.example.franklin.visualcontext.Constants.JSON_RESTRICTIONS_KEY;
 
@@ -45,6 +48,43 @@ public class RestrictionListActivity extends AppCompatActivity implements View.O
         vegetarian = findViewById(R.id.Vegetarian);
         kosher = findViewById(R.id.Kosher);
 
+        File file = new File(getApplicationContext().getFilesDir(), Constants.USER_PREFS_FILE_NAME);
+
+        try {
+            InputStream is = new FileInputStream(file);
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is,"UTF-8"));
+            String line;
+
+            while ( (line = rd.readLine()) != null ){
+                if(line.matches(".*GLUTEN_FREE.*")){ //--regex of what to search--
+
+                    glutenfree.setChecked(true);
+                }
+                if(line.matches(".*PEANUT_ALLERGY.*")){ //--regex of what to search--
+
+                    peanutallergies.setChecked(true);
+                }
+                if(line.matches(".*VEGETARIAN.*")){ //--regex of what to search--
+
+                    vegetarian.setChecked(true);
+                }
+                if(line.matches(".*KOSHER.*")){ //--regex of what to search--
+
+                    kosher.setChecked(true);
+                }
+                if(line.matches(".*HALAL.*")){ //--regex of what to search--
+
+                    halal.setChecked(true);
+                }
+
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Button one = findViewById(R.id.button7);
         one.setOnClickListener(this);
     }
