@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
         checkPermissionsAndGetLikelyPlaceNames();
         //this one is for demoing purposes for a menu we hardcoded
-        likelyPlaces.add(new Restaurant("abc", "Popeyes' Chicken", null, 2));
+        likelyPlaces.add(new Restaurant("abc", "PERFECT Chinese Restaurant", null, 2));
         displayPlaces();
     }
 

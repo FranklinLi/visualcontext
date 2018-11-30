@@ -69,8 +69,7 @@ public class Utils {
     public static View show_place_menu_items_list(Activity activity, Menu menu) {
         List<CharSequence> menuItemNames = new ArrayList<>();
         for (MenuItem item: menu.getMenuItems()) {
-            menuItemNames.add(item.getName());
-            System.out.println(item.getName() + " score " + item.getPreferenceScore());
+            menuItemNames.add(item.getName() + " - " + item.getPrice() + " CAD");
         }
         return show_list(activity, menuItemNames);
     }
