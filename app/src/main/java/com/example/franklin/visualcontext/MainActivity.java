@@ -2,9 +2,11 @@ package com.example.franklin.visualcontext;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +21,6 @@ import android.widget.Toast;
 import com.example.franklin.visualcontext.data.Place;
 import com.example.franklin.visualcontext.data.PlaceToTypeMapping;
 import com.example.franklin.visualcontext.data.restaurant.PreferenceIngredient;
-import com.example.franklin.visualcontext.data.restaurant.PreferenceLevels;
 import com.example.franklin.visualcontext.data.restaurant.Restaurant;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
@@ -30,17 +31,14 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +48,41 @@ import static com.example.franklin.visualcontext.Constants.JSON_RESTRICTIONS_KEY
 public class MainActivity extends AppCompatActivity implements
         View.OnClickListener {
 
+    /**
+     * Requests updates to current location
+     */
+    private LocationManager mLocationManager;
+
+    /**
+     * flag to keep track of whether we're currently updating the location
+     */
+    private boolean updatingLocation;
+
+    private static final Integer LOCATION_UPDATE_MIN_INTERVAL_MILLIS = 10000;
+
+    private static final Integer LOCATION_UPDATE_MIN_DISTANCE_METERS = 5;
+
+    /**
+     * The location listener for the location manager
+     */
+    private LocationListener mListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            callPlaceDetectionApi();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+    };
 
     /**
      * For getting data about a place
@@ -85,18 +118,25 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Button one = findViewById(R.id.preferences);
         one.setOnClickListener(this); // calling onClick() method
         Button two = findViewById(R.id.restrictions);
         two.setOnClickListener(this);
-
+        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         mGeoDataClient = Places.getGeoDataClient(this);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
         checkPermissionsAndGetLikelyPlaceNames();
         //this one is for demoing purposes for a menu we hardcoded
         likelyPlaces.add(new Restaurant("abc", "PERFECT Chinese Restaurant", null, 2));
         displayPlaces();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestLocationAndCallPlaceDetectionApi(){
+        mLocationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER, LOCATION_UPDATE_MIN_INTERVAL_MILLIS, LOCATION_UPDATE_MIN_DISTANCE_METERS,
+                mListener);
+        updatingLocation = true;
     }
 
     /**
@@ -108,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements
             //permission not already granted
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
         } else {
-            callPlaceDetectionApi();
+            requestLocationAndCallPlaceDetectionApi();
         }
     }
 
@@ -124,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted
-                    callPlaceDetectionApi();
+                    requestLocationAndCallPlaceDetectionApi();
                 } else {
                     //permission was denied
                     Toast.makeText(this, "Location permission denied, unable to find nearby " +
@@ -248,4 +288,31 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //to conserve battery, stop when in background
+        if (updatingLocation) {
+            stopLocationUpdates();
+        }
+        Log.i(TAG, "onPause, done");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!updatingLocation) {
+            checkPermissionsAndGetLikelyPlaceNames();
+        }
+    }
+
+    /**
+     * Stops location updates
+     */
+    private void stopLocationUpdates() {
+        mLocationManager.removeUpdates(mListener);
+        updatingLocation = false;
+    }
+
 }
