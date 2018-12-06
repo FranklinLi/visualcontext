@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity implements
      */
     private boolean updatingLocation;
 
-    private static final Integer LOCATION_UPDATE_MIN_INTERVAL_MILLIS = 10000;
+    private static final Integer LOCATION_UPDATE_MIN_INTERVAL_MILLIS = 1000;
 
-    private static final Integer LOCATION_UPDATE_MIN_DISTANCE_METERS = 5;
+    private static final Integer LOCATION_UPDATE_MIN_DISTANCE_METERS = 1;
 
     /**
      * The location listener for the location manager
@@ -126,17 +126,16 @@ public class MainActivity extends AppCompatActivity implements
         mGeoDataClient = Places.getGeoDataClient(this);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
         checkPermissionsAndGetLikelyPlaceNames();
-        //this one is for demoing purposes for a menu we hardcoded
-        likelyPlaces.add(new Restaurant("abc", "PERFECT Chinese Restaurant", null, 2));
         displayPlaces();
     }
 
     @SuppressLint("MissingPermission")
-    private void requestLocationAndCallPlaceDetectionApi(){
+    private void requestLocationUpdates(){
         mLocationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER, LOCATION_UPDATE_MIN_INTERVAL_MILLIS, LOCATION_UPDATE_MIN_DISTANCE_METERS,
                 mListener);
         updatingLocation = true;
+        Log.i(TAG, "REQUESTING LOCATION UPDATES");
     }
 
     /**
@@ -148,7 +147,10 @@ public class MainActivity extends AppCompatActivity implements
             //permission not already granted
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
         } else {
-            requestLocationAndCallPlaceDetectionApi();
+            //Update the places based on last known location first
+            callPlaceDetectionApi();
+            //Continuously updates the location
+            requestLocationUpdates();
         }
     }
 
@@ -164,7 +166,10 @@ public class MainActivity extends AppCompatActivity implements
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted
-                    requestLocationAndCallPlaceDetectionApi();
+                    //Calls to update the places with last known location first
+                    callPlaceDetectionApi();
+                    //initiates location updates to automatically change the places based on location changes
+                    requestLocationUpdates();
                 } else {
                     //permission was denied
                     Toast.makeText(this, "Location permission denied, unable to find nearby " +
@@ -191,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements
 
                             // Set the count, handling cases where less than max entries are returned.
                             int count = Math.min(likelyPlaceResults.getCount(), M_MAX_ENTRIES);
+                            //first clear existing places
+                            likelyPlaces.clear();
                             for (PlaceLikelihood placeLikelihood : likelyPlaceResults) {
                                 Log.d(TAG, "found place " + placeLikelihood.getPlace().getName() + " with likelihood " + placeLikelihood.getLikelihood());
 
@@ -215,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements
                             }
                             // Release the place likelihood buffer, to avoid memory leaks.
                             likelyPlaceResults.release();
-                            Log.d(TAG, "api call complete");
+                            Log.d(TAG, "PLACES API CALL COMPLETE");
                             displayPlaces();
                         } else {
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -224,7 +231,13 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }
 
+
+    /**
+     * Displays places based on the likelyPlaces list
+     */
     private void displayPlaces() {
+        //this one is for demoing purposes for a menu we hardcoded
+        likelyPlaces.add(new Restaurant("abc", "PERFECT Chinese Restaurant", null, 2));
         //displays list
         View placesView = Utils.show_place_names_list(MainActivity.this,
                 likelyPlaces);
@@ -305,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements
         if (!updatingLocation) {
             checkPermissionsAndGetLikelyPlaceNames();
         }
+        Log.i(TAG, "onResume, done");
     }
 
     /**
@@ -313,6 +327,6 @@ public class MainActivity extends AppCompatActivity implements
     private void stopLocationUpdates() {
         mLocationManager.removeUpdates(mListener);
         updatingLocation = false;
+        Log.i(TAG, "STOPPING LOCATION UPDATES");
     }
-
 }
