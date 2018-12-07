@@ -4,34 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
     android:fitsSystemWindows="true"
+    tools:context=".MainActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list_view" />
+        android:id="@+id/list_view"
+        android:layout_width="0dp"
+        android:layout_height="603dp"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/preferences"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:text="Preference"
-        app:layout_constraintBaseline_toBaselineOf="@+id/restrictions"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/restrictions"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
+        android:id="@+id/history"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="0dp"
+        android:text="history"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/selfreport" />
+
+    <Button
+        android:id="@+id/selfreport"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="self report"
+        app:layout_constraintBottom_toBottomOf="@+id/history"
+        app:layout_constraintEnd_toStartOf="@+id/history"
+        app:layout_constraintStart_toEndOf="@+id/restrictions"
+        app:layout_constraintTop_toTopOf="@+id/history" />
+
+    <Button
         android:id="@+id/restrictions"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="100dp"
         android:text="Restriction"
         android:textColorLink="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/selfreport"
         app:layout_constraintStart_toEndOf="@+id/preferences" />
 
 </android.support.constraint.ConstraintLayout>

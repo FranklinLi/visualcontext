@@ -122,6 +122,10 @@ public class MainActivity extends AppCompatActivity implements
         one.setOnClickListener(this); // calling onClick() method
         Button two = findViewById(R.id.restrictions);
         two.setOnClickListener(this);
+        Button three = findViewById(R.id.history);
+        three.setOnClickListener(this);
+        Button four = findViewById(R.id.selfreport);
+        four.setOnClickListener(this);
         mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         mGeoDataClient = Places.getGeoDataClient(this);
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
@@ -295,6 +299,16 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.preferences:
                 createPreferencesFileIfEmpty();
                 intent = new Intent(this, PreferenceListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.selfreport:
+                createPreferencesFileIfEmpty();
+                intent = new Intent(this, SelfReportActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.history:
+                createPreferencesFileIfEmpty();
+                intent = new Intent(this, History.class);
                 startActivity(intent);
                 break;
             default:
