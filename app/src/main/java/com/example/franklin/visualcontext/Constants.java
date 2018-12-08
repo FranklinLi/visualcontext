@@ -9,14 +9,7 @@ public class Constants {
      * File name that stores user preferences and restrictions
      */
     public static final String USER_PREFS_FILE_NAME = "preference.json";
-
-
-    /**
-     * File name that stores history record
-     */
-    public static final String USER_LOG_FILE_NAME = "history.json";
-
-
+    
     /**
      * Used as the key for passing the ingredient name during preference level selection for an
      * ingredient

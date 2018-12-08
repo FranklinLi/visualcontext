@@ -9,21 +9,11 @@ import android.widget.Toast;
 
 import com.example.franklin.visualcontext.data.Place;
 import com.example.franklin.visualcontext.data.restaurant.Menu;
-import com.example.franklin.visualcontext.data.restaurant.MenuItem;
-import com.example.franklin.visualcontext.data.restaurant.PreferenceMetadata;
 import com.example.franklin.visualcontext.data.restaurant.Restaurant;
 
-import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
 
 import static com.example.franklin.visualcontext.Constants.USER_PREFS_FILE_NAME;
 

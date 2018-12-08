@@ -18,7 +18,7 @@ import static com.example.franklin.visualcontext.Constants.JSON_PREFERENCES_KEY;
 import static com.example.franklin.visualcontext.Constants.JSON_RESTRICTIONS_KEY;
 
 /**
- * Consists of the items persistently stored for a user's food preferences
+ * Consists of the items persistently stored for a user's food preferences in java data structures
  */
 @Getter
 @AllArgsConstructor

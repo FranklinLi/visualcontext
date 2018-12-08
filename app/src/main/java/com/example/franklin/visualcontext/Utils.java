@@ -10,7 +10,6 @@ import android.widget.ListView;
 import com.example.franklin.visualcontext.data.Place;
 import com.example.franklin.visualcontext.data.restaurant.Menu;
 import com.example.franklin.visualcontext.data.restaurant.MenuItem;
-import com.example.franklin.visualcontext.data.restaurant.PreferenceIngredient;
 import com.example.franklin.visualcontext.data.restaurant.Restaurant;
 
 import java.io.IOException;

@@ -23,7 +23,7 @@ import java.util.Arrays;
  This class is used to show the report
  */
 
-public class History extends AppCompatActivity implements View.OnClickListener {
+public class HistoryActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

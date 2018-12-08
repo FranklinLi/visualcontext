@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/selfreportactivity"
     tools:context=".SelfReportActivity">
 
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/submitbutton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
@@ -17,18 +18,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext" />
+        app:layout_constraintTop_toBottomOf="@+id/selfreportedfood" />
 
-    <EditText
-        android:id="@+id/edittext"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/instructions"
+        android:text="Please describe what you ate in the textbox below"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:textSize="13pt"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Input your food"
+        app:layout_constraintBottom_toTopOf="@id/selfreportedfood"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="0dp"
+    />
+    <EditText
+        android:id="@+id/selfreportedfood"
+        android:layout_width="0dp"
+        android:layout_height="35pt"
+        android:layout_alignLeft="@+id/button"
+        android:ems="10"
+        android:hint="Input your food"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instructions" />
+
+
 
 </android.support.constraint.ConstraintLayout>

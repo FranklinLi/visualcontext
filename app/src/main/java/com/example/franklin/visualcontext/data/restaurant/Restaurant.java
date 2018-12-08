@@ -4,9 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.example.franklin.visualcontext.data.Place;
 
-import java.util.Arrays;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

@@ -10,15 +10,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
-
-import static com.example.franklin.visualcontext.Constants.USER_PREFS_FILE_NAME;
 
 /**
  * Represents the menu of a restaurant
