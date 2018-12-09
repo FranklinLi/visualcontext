@@ -8,6 +8,7 @@
     tools:context=".SelfReportActivity">
 
 
+
     <Button
         android:id="@+id/submitbutton"
         android:layout_width="0dp"
@@ -27,7 +28,7 @@
         android:textStyle="bold"
         android:textSize="13pt"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/selfreportedfood"
+        app:layout_constraintBottom_toTopOf="@id/voicebutton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="0dp"
@@ -42,7 +43,20 @@
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/instructions" />
+        app:layout_constraintTop_toBottomOf="@id/voicebutton" />
+
+    <Button
+        android:id="@+id/voicebutton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:text="Press to Start Voice Recognition"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/instructions" />
+
 
 
 

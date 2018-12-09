@@ -1,10 +1,15 @@
 package com.example.franklin.visualcontext;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.franklin.visualcontext.data.Place;
@@ -49,9 +54,36 @@ public class DetailsActivity extends AppCompatActivity {
             ((Restaurant) place).setMenu(menu);
         }
         if (detailsFound) {
-            Utils.show_place_details(this, place);
+            final ListView display = (ListView) Utils.show_place_details(this, place);
+            //if restaurant, report to nutritionix on click
+            if (place instanceof Restaurant) {
+                display.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position,
+                                            long id) {
+                        String foodName = (String) display.getItemAtPosition(position);
+                        createConfirmationAlertDialog(foodName).show();
+                    }
+                });
+            }
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private AlertDialog createConfirmationAlertDialog(final String foodName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Add the buttons
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                new CallNutritionixAPITask(DetailsActivity.this).execute(foodName);
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        builder.setTitle("Are you sure you want to record this dish in your nutrition data?");
+        return builder.create();
+    }
 }

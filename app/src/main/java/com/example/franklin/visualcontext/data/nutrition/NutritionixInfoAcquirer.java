@@ -40,15 +40,13 @@ public class NutritionixInfoAcquirer {
     //this is 0 for dev purposes
     private static final String REMOTE_USER_ID = "0";
 
-    private static final String REMOTE_USER_ID_KEY="x-remote-user-id";
+    private static final String REMOTE_USER_ID_KEY = "x-remote-user-id";
 
     private static final String TAG = NutritionixInfoAcquirer.class.getSimpleName();
 
     public static AggregateNutritionData getNutritionInfo(@NonNull final String foodName) throws
-            JSONException, IOException {
+            JSONException, IOException, NutritionixResponseException {
         URL url = new URL("https://trackapi.nutritionix.com/v2/natural/nutrients");
-        InputStream in = null;
-        OutputStreamWriter out = null;
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             urlConnection.setDoOutput(true);
@@ -66,31 +64,24 @@ public class NutritionixInfoAcquirer {
             //this combines all foods in the query into one food
             query.put("aggregate", foodName);
 
-            OutputStream outputStream = urlConnection.getOutputStream();
-            out = new OutputStreamWriter(outputStream, "UTF-8");
+            OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8");
             Log.d(TAG, query.toString());
             out.write(query.toString());
             out.close();
             urlConnection.connect();
 
             if (urlConnection.getResponseCode() == 200) {
-                in = new BufferedInputStream(urlConnection.getInputStream());
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 String response = IOUtils.toString(in);
                 JSONObject jsonResponse = new JSONObject(response);
+                in.close();
                 return extractNutritionDataFromJSON(jsonResponse);
             } else {
                 Log.d(TAG, urlConnection.getResponseMessage());
-                throw new IllegalStateException("call to nutritionix failed with code " +
-                        urlConnection.getResponseCode() + " and error message " +
-                        IOUtils.toString(urlConnection
-                                .getErrorStream()));
+                throw new NutritionixResponseException(urlConnection.getResponseCode(), IOUtils.toString(urlConnection
+                        .getErrorStream()));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
         } finally {
-            in.close();
-            out.close();
             urlConnection.disconnect();
         }
     }
@@ -99,9 +90,9 @@ public class NutritionixInfoAcquirer {
      * see response structure at https://gist.github.com/mattsilv/95f94dd1378d4747fb68ebb2d042a4a6
      */
     private static AggregateNutritionData extractNutritionDataFromJSON(@NonNull final JSONObject
-                                                                             jsonResponse) throws JSONException {
+                                                                               jsonResponse) throws JSONException {
         Map<AggregateNutritionData.NutritionDataKeys, NutritionData> nutritionDataList = new HashMap<>();
-        Log.d(TAG, "Json response from nutritionix is " +jsonResponse.toString());
+        Log.d(TAG, "Json response from nutritionix is " + jsonResponse.toString());
         //should only be one food if we use "aggregate", so just get 0th index
         JSONObject data = jsonResponse.getJSONArray("foods").getJSONObject(0);
         String foodName = data.getString("food_name");
@@ -109,7 +100,7 @@ public class NutritionixInfoAcquirer {
                 .getInt("nf_calories")));
         nutritionDataList.put(AggregateNutritionData.NutritionDataKeys.CARBS, new NutritionData.Carbohydrates((double)
                 data
-                .getInt("nf_total_carbohydrate")));
+                        .getInt("nf_total_carbohydrate")));
         nutritionDataList.put(AggregateNutritionData.NutritionDataKeys.FATS, new NutritionData
                 .Fat((double) data
                 .getInt("nf_total_fat")));

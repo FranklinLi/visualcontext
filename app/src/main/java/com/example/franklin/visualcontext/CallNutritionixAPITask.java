@@ -1,5 +1,6 @@
 package com.example.franklin.visualcontext;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.util.Log;
 
 import com.example.franklin.visualcontext.data.nutrition.AggregateNutritionData;
 import com.example.franklin.visualcontext.data.nutrition.NutritionixInfoAcquirer;
+import com.example.franklin.visualcontext.data.nutrition.NutritionixResponseException;
 
 import org.json.JSONException;
 
@@ -20,10 +22,13 @@ import java.util.Locale;
 
 public class CallNutritionixAPITask  extends AsyncTask<String,  String, AggregateNutritionData> {
 
-    private Context context;
+    /**
+     * Activity this was called from
+     */
+    private Activity activity;
 
-    public CallNutritionixAPITask(Context context) {
-        this.context = context;
+    public CallNutritionixAPITask(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
@@ -31,12 +36,27 @@ public class CallNutritionixAPITask  extends AsyncTask<String,  String, Aggregat
         String food = objects[0];
         try {
             return NutritionixInfoAcquirer.getNutritionInfo(food);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            if (e instanceof NutritionixResponseException) {
+                activity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (((NutritionixResponseException) e).getResponseCode() == 404) {
+                            createAlertDialog("Your food could not be found in the database").show();
+                        } else {
+                            createAlertDialog("Call to Nutritionix failed with error code " +
+                                     ((NutritionixResponseException) e).getResponseCode())
+                                    .show();
+                        }
+                    }
+                });
+            } else {
+                createAlertDialog("Operation failed due to an internal error");
+            }
+            //cancelling means onPostExecute will never run
+            this.cancel(true);
         }
-        throw new IllegalStateException("API call failed with food " + food);
+        throw new IllegalStateException("Async task for Nutritionix API call ran into an " +
+                "issue");
     }
 
     /**
@@ -51,26 +71,26 @@ public class CallNutritionixAPITask  extends AsyncTask<String,  String, Aggregat
                 .NutritionDataKeys.FATS).toDisplayString();
         String sodium = data.getNutritionData().get(AggregateNutritionData
                 .NutritionDataKeys.SODIUM).toDisplayString();
-        try {
-            String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            String date_json = date + ".json";
-            File file = new File(context.getFilesDir(), date_json);
-            WriteToReport.WriteToJsonReport(file, calories, carbs, sodium, fats, data.getFoodName());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String date_json = date + ".json";
+        File file = new File(activity.getFilesDir(), date_json);
+        WriteToReport.WriteToJsonReport(file, calories, carbs, sodium, fats, data.getFoodName());
+
         Log.i("CallNutritionAPITask", "wrote food " + data.getFoodName() + " to json file");
-        createAlertDialog("Your food intake has been successfully saved").show();
+        createAlertDialog("Your food intake has been successfully recorded").show();
     }
 
     private AlertDialog createAlertDialog(String title) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         // Add the buttons
-        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
-
+                Intent intent = new Intent(activity, MainActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+        builder.setNeutralButton("Report another food", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
             }
         });
         builder.setTitle(title);

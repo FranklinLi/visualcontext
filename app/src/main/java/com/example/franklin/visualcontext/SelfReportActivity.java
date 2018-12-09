@@ -43,11 +43,10 @@ public class SelfReportActivity extends AppCompatActivity implements View.OnClic
             case R.id.submitbutton:
                 String str = eText.getText().toString();
                 eText.setText("");
-                /*
-                 **    Please call the API here
-                 */
                 new CallNutritionixAPITask(this).execute(str);
                 break;
+            case R.id.voicebutton:
+                
             default:
                 break;
         }

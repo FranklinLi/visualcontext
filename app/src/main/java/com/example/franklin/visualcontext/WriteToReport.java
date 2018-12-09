@@ -17,7 +17,7 @@ public class WriteToReport {
 
     public static void WriteToJsonReport(File file, String calorie, String carb, String sodium,
                                          String fats, String
-                                                 food) throws IOException {
+                                                 food) {
         if (file.length() == 0) {
             try (FileOutputStream out = new FileOutputStream(file)) {
                 JSONObject jsonObj = new JSONObject();
@@ -49,6 +49,7 @@ public class WriteToReport {
                 foodObject.put("food", food);
                 foodObject.put("sodium", sodium);
                 foodObject.put("calorie", calorie);
+                foodObject.put("fats", fats);
                 foodObject.put("carb", carb);
                 jsonArray.put(foodObject);
                 new_jsonObject.put("dishes", jsonArray);
