@@ -61,7 +61,8 @@ public class DetailsActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position,
                                             long id) {
-                        String foodName = (String) display.getItemAtPosition(position);
+                        String foodName = "1 serving of " + (String) display.getItemAtPosition
+                                (position);
                         createFoodRecordConfirmationAlertDialog(foodName).show();
                     }
                 });
