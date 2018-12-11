@@ -91,23 +91,22 @@ public class NutritionixInfoAcquirer {
      */
     private static AggregateNutritionData extractNutritionDataFromJSON(@NonNull final JSONObject
                                                                                jsonResponse) throws JSONException {
-        Map<AggregateNutritionData.NutritionDataKeys, NutritionData> nutritionDataList = new HashMap<>();
+        Map<AggregateNutritionData.NutritionDataKeys, NutritionData> nutritionDataMap = new HashMap<>();
         Log.d(TAG, "Json response from nutritionix is " + jsonResponse.toString());
         //should only be one food if we use "aggregate", so just get 0th index
         JSONObject data = jsonResponse.getJSONArray("foods").getJSONObject(0);
         String foodName = data.getString("food_name");
-        nutritionDataList.put(AggregateNutritionData.NutritionDataKeys.CALORIES, new NutritionData.Calories((double) data
+        nutritionDataMap.put(AggregateNutritionData.NutritionDataKeys.CALORIES, new NutritionData.Calories((double) data
                 .getInt("nf_calories")));
-        nutritionDataList.put(AggregateNutritionData.NutritionDataKeys.CARBS, new NutritionData.Carbohydrates((double)
-                data
-                        .getInt("nf_total_carbohydrate")));
-        nutritionDataList.put(AggregateNutritionData.NutritionDataKeys.FATS, new NutritionData
+        nutritionDataMap.put(AggregateNutritionData.NutritionDataKeys.CARBS, new NutritionData.Carbohydrates((double)
+                data.getInt("nf_total_carbohydrate")));
+        nutritionDataMap.put(AggregateNutritionData.NutritionDataKeys.FATS, new NutritionData
                 .Fat((double) data
                 .getInt("nf_total_fat")));
-        nutritionDataList.put(AggregateNutritionData.NutritionDataKeys.SODIUM, new
+        nutritionDataMap.put(AggregateNutritionData.NutritionDataKeys.SODIUM, new
                 NutritionData.Sodium((double) data
                 .getInt("nf_sodium")));
 
-        return new AggregateNutritionData(foodName, nutritionDataList);
+        return new AggregateNutritionData(foodName, nutritionDataMap);
     }
 }

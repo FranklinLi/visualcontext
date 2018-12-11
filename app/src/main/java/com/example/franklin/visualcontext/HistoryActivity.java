@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.franklin.visualcontext.data.MetadataTranslation;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.json.JSONArray;
@@ -18,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 /*
  This class is used to show the report
@@ -46,24 +49,18 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         try (FileInputStream in = new FileInputStream(file)) {
             String jsonString = IOUtils.toString(in);
             JSONObject jsonObject = new JSONObject(jsonString);
-            JSONArray jsonArray = jsonObject.optJSONArray("dishes");
-            String date = file.getName().replace(".json", "");
-            final_output = final_output + date + "\n";
-
-
-            String food;
-            long calorie, carb, sodium, fats;
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject row = jsonArray.getJSONObject(i);
-                food = row.getString("food");
-                calorie = row.getLong("calorie");
-                carb = row.getLong("carb");
-                sodium = row.getLong("sodium");
-                fats = row.getLong("fats");
-                final_output = final_output + food + " " + String.valueOf(calorie) + " calories " + String.valueOf(carb) + " g carb " + String.valueOf(sodium) + " mg sodium " + String.valueOf(fats) + " g fats" + "\n";
+            //each list item has different kinds of nutrition data for each dish
+            List<String> displayStrings = MetadataTranslation.jsonToDisplayStrings(jsonObject);
+            //Populate listview with all the strings from displayStrings here
+            //this is just for showing it, but not using listview right now
+            for (String str: displayStrings) {
+                final_output += str;
             }
-
-
+            //this is daily summary for aggregate daily stats, show this at top or bottom of
+            // listview
+            String daily_summary = MetadataTranslation.jsonToDailyAggregateDisplayString
+                    (jsonObject);
+            final_output += daily_summary;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -71,7 +68,6 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         history.setText(final_output);
     }
 

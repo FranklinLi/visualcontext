@@ -64,13 +64,14 @@ public class CallNutritionixAPITask  extends AsyncTask<String,  String, Aggregat
      * @param data
      */
     protected void onPostExecute(AggregateNutritionData data) {
-        double calories = data.getNutritionData().get(AggregateNutritionData.NutritionDataKeys.CALORIES).toDisplayDouble();
+        double calories = data.getNutritionData().get(AggregateNutritionData.NutritionDataKeys
+                .CALORIES).getValue();
         double carbs = data.getNutritionData().get(AggregateNutritionData
-                .NutritionDataKeys.CARBS).toDisplayDouble();
+                .NutritionDataKeys.CARBS).getValue();
         double fats = data.getNutritionData().get(AggregateNutritionData
-                .NutritionDataKeys.FATS).toDisplayDouble();
+                .NutritionDataKeys.FATS).getValue();
         double sodium = data.getNutritionData().get(AggregateNutritionData
-                .NutritionDataKeys.SODIUM).toDisplayDouble();
+                .NutritionDataKeys.SODIUM).getValue();
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String date_json = date + ".json";
         File file = new File(activity.getFilesDir(), date_json);

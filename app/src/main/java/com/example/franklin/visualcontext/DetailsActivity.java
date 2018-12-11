@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.franklin.visualcontext.data.MetadataTranslation;
 import com.example.franklin.visualcontext.data.Place;
 import com.example.franklin.visualcontext.data.restaurant.Menu;
 import com.example.franklin.visualcontext.data.restaurant.Restaurant;
@@ -35,39 +36,29 @@ public class DetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Intent intent = this.getIntent();
         Place place = (Place) (intent.getExtras().getSerializable("Place"));
-        boolean detailsFound = true;
         if (place instanceof Restaurant) {
-            Menu menu = null;
             try (InputStream in = getResources().openRawResource(getResources().getIdentifier
                     (place.getId(), "raw", getPackageName()))) {
-                menu = Utils.readMenuFromJSON(in);
-                menu = Menu.filterAndSortMenuItems(menu,  new File(getFilesDir(),
+                final Menu menu =  Menu.filterAndSortMenuItems(MetadataTranslation
+                        .readMenuFromJSON(in), new File(getFilesDir(),
                         USER_PREFS_FILE_NAME));
-            } catch (IOException e) {
-                detailsFound = false;
-                e.printStackTrace();
-            } catch (Resources.NotFoundException ex) {
-                detailsFound = false;
-                Toast.makeText(this, "No menu found for this restaurant", Toast.LENGTH_LONG).show();
-            }
-
-            ((Restaurant) place).setMenu(menu);
-        }
-        if (detailsFound) {
-            final ListView display = (ListView) Utils.show_place_details(this, place);
-            //if restaurant, report to nutritionix on click
-            if (place instanceof Restaurant) {
+                ((Restaurant) place).setMenu(menu);
+                final ListView display = (ListView) Utils.show_place_details(this, place);
                 display.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position,
                                             long id) {
-                        String foodName = "1 serving of " + (String) display.getItemAtPosition
-                                (position);
+                        String foodName = menu.getMenuItems().get(position).getName();
                         createFoodRecordConfirmationAlertDialog(foodName).show();
                     }
                 });
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Resources.NotFoundException ex) {
+                Toast.makeText(this, "No menu found for this restaurant", Toast.LENGTH_LONG).show();
             }
         }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

@@ -2,6 +2,8 @@ package com.example.franklin.visualcontext.data.nutrition;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * Object representing types of nutrition data we keep track of
@@ -11,30 +13,58 @@ import lombok.Getter;
 public abstract class NutritionData {
 
     /**
+     * Name of the nutrition to be displayed
+     */
+    @NonNull
+    private final String name;
+
+    /**
      * The numerical value of the nutrition
      */
-    private final Double value;
+    @NonNull
+    private Double value;
 
     /**
      * The unit of the nutrition info
      */
+    @NonNull
     private final NutritionUnitTypes unitType;
 
     /**
-     * Converts to a string to be displayed to the user and saved in the json file
+     * currently based on a 2000 calories diet
+     */
+    @NonNull
+    private final Double dailyRecommendedValue;
+
+    /**
+     * Used for aggregation of daily values
+     */
+    public void incrementValue(Double value) {
+        this.value += value;
+    }
+
+    /**
+     * Calculates the percentage of the recommended daily value of this nutritional intake
+     */
+    public Long getPercentageDailyValue() {
+        return Math.round((value / dailyRecommendedValue) * 100);
+    }
+
+    /**
+     * String to be displayed and read to the user
      * @return
      */
     public String toDisplayString() {
-        return value + unitType.getUnitAbbreviation();
+        return name + " content of " + value + unitType.getUnitAbbreviation() + " or "
+                + getPercentageDailyValue() + "% " +
+                "recommended daily value\n";
     }
-
-    public Double toDisplayDouble() {return value;}
     /**
      * Calories data model
      */
     public static class Calories extends NutritionData {
         public Calories(Double value) {
-            super(value, NutritionUnitTypes.CALORIES);
+            super("calories", value, NutritionUnitTypes.CALORIES, 2000.0);
         }
     }
 
@@ -43,7 +73,7 @@ public abstract class NutritionData {
      */
     public static class Carbohydrates extends NutritionData {
         public Carbohydrates(Double value) {
-            super(value, NutritionUnitTypes.GRAMS);
+            super("carbohydrates", value, NutritionUnitTypes.GRAMS, 325.0);
         }
     }
 
@@ -52,7 +82,7 @@ public abstract class NutritionData {
      */
     public static class Sodium extends NutritionData {
         public Sodium(Double value) {
-            super(value, NutritionUnitTypes.MILLIGRAMS);
+            super("sodium", value, NutritionUnitTypes.MILLIGRAMS, 2300.0);
         }
     }
 
@@ -61,7 +91,7 @@ public abstract class NutritionData {
      */
     public static class Fat extends NutritionData {
         public Fat(Double value) {
-            super(value, NutritionUnitTypes.GRAMS);
+            super("fat", value, NutritionUnitTypes.GRAMS, 77.0);
         }
     }
 }
