@@ -62,7 +62,7 @@ public class DetailsActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position,
                                             long id) {
                         String foodName = (String) display.getItemAtPosition(position);
-                        createConfirmationAlertDialog(foodName).show();
+                        createFoodRecordConfirmationAlertDialog(foodName).show();
                     }
                 });
             }
@@ -70,7 +70,7 @@ public class DetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private AlertDialog createConfirmationAlertDialog(final String foodName) {
+    private AlertDialog createFoodRecordConfirmationAlertDialog(final String foodName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         // Add the buttons

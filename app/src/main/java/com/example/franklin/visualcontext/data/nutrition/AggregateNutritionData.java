@@ -15,7 +15,7 @@ public class AggregateNutritionData {
     /**
      * Keys for keying into the nutrient data map
      */
-    public enum NutritionDataKeys {CALORIES, CARBS, FATS, SODIUM};
+    public enum NutritionDataKeys {CALORIES, CARBS, FATS, SODIUM}
 
     private final String foodName;
 

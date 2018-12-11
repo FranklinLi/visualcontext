@@ -50,7 +50,7 @@ public class CallNutritionixAPITask  extends AsyncTask<String,  String, Aggregat
                     }
                 });
             } else {
-                createAlertDialog("Operation failed due to an internal error");
+                createAlertDialog("Operation failed due to an internal error").show();
             }
             //cancelling means onPostExecute will never run
             this.cancel(true);

@@ -1,41 +1,40 @@
 package com.example.franklin.visualcontext;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.Manifest;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.franklin.visualcontext.data.nutrition.AggregateNutritionData;
-import com.example.franklin.visualcontext.data.nutrition.NutritionixInfoAcquirer;
 
-import org.json.JSONException;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class SelfReportActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static EditText eText;
-    private static Button btn;
     private static final String TAG = SelfReportActivity.class.getSimpleName();
+    private SpeechRecognizer sr;
+    private SpeechListener speechListener;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_self_report);
-        eText = (EditText) findViewById(R.id.selfreportedfood);
-        btn = (Button) findViewById(R.id.submitbutton);
-        btn.setOnClickListener(this);
+        eText = findViewById(R.id.selfreportedfood);
+        Button submit = findViewById(R.id.submitbutton);
+        submit.setOnClickListener(this);
+        Button voice = findViewById(R.id.voicebutton);
+        voice.setOnClickListener(this);
+        sr = SpeechRecognizer.createSpeechRecognizer(this);
+        speechListener = new SpeechListener(eText);
+        sr.setRecognitionListener(speechListener);
     }
 
     public void onClick(View v) {
@@ -46,11 +45,32 @@ public class SelfReportActivity extends AppCompatActivity implements View.OnClic
                 new CallNutritionixAPITask(this).execute(str);
                 break;
             case R.id.voicebutton:
-                
+                requestRecordAudioPermission();
+                eText.setText("");
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE," com.example.franklin" +
+                        ".visualcontext");
+                intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+                sr.startListening(intent);
+                break;
             default:
                 break;
         }
     }
 
+    /**
+     * Asks for record audio permission if not permitted
+     */
+    private void requestRecordAudioPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String requiredPermission = Manifest.permission.RECORD_AUDIO;
 
+            // If the user previously denied this permission then show a message explaining why
+            // this permission is needed
+            if (checkCallingOrSelfPermission(requiredPermission) == PackageManager.PERMISSION_DENIED) {
+                requestPermissions(new String[]{requiredPermission}, 101);
+            }
+        }
+    }
 }
