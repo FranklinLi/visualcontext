@@ -81,7 +81,7 @@ public class PreferenceListActivity extends AppCompatActivity implements View.On
                 intent = new Intent(this, PreferenceLikertScaleActivity.class);
                 message = PreferenceIngredient.CRUCIFEROUS.toString();
                 intent.putExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE, message);
-                startActivity(intent);
+                startActivity(intent) ;
                 break;
             default:
                 break;
