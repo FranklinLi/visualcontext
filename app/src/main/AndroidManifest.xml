@@ -60,7 +60,8 @@
                 android:value="com.example.franklin.visualcontext.MainActivity" />
         </activity>
         <activity android:name=".HistoryActivity" />
-        <activity android:name=".SelfReportActivity"></activity>
+        <activity android:name=".SelfReportActivity" />
+        <activity android:name=".HistoryListActivity"></activity>
     </application>
 
 </manifest>

@@ -15,8 +15,8 @@ import java.io.IOException;
 
 public class WriteToReport {
 
-    public static void WriteToJsonReport(File file, String calorie, String carb, String sodium,
-                                         String fats, String
+    public static void WriteToJsonReport(File file, double calorie, double carb, double sodium,
+                                         double fats, String
                                                  food) {
         if (file.length() == 0) {
             try (FileOutputStream out = new FileOutputStream(file)) {

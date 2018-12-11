@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(intent);
                 break;
             case R.id.history:
-                intent = new Intent(this, HistoryActivity.class);
+                intent = new Intent(this, HistoryListActivity.class);
                 startActivity(intent);
                 break;
             default:

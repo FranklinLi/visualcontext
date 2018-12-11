@@ -25,55 +25,54 @@ import java.util.Arrays;
 
 public class HistoryActivity extends AppCompatActivity implements View.OnClickListener {
 
+
+    public String filename;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        TextView history = (TextView)findViewById(R.id.textView);
-        String final_output="";
-        File filesDir = getApplicationContext().getFilesDir();
-        File[] files = filesDir.listFiles();
+
+        Intent intent = getIntent();
+        filename = intent.getStringExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE) + ".json";
+
+
+        TextView history = (TextView) findViewById(R.id.textView);
+        String final_output = "";
+
+        File file = new File(getApplicationContext().getFilesDir(), filename);
         Button btn = (Button) findViewById(R.id.button2);
         btn.setOnClickListener(this);
-        Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-        for (File file : files){
-            if (file.getName().contains("20")){
-                try (FileInputStream in = new FileInputStream(file)) {
-                  String jsonString = IOUtils.toString(in);
-                  JSONObject jsonObject = new JSONObject(jsonString);
-                  JSONArray jsonArray = jsonObject.optJSONArray("dishes");
-                  String date = file.getName().replace(".json","");
-                  final_output = final_output + date +  "\n";
+        try (FileInputStream in = new FileInputStream(file)) {
+            String jsonString = IOUtils.toString(in);
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray jsonArray = jsonObject.optJSONArray("dishes");
+            String date = file.getName().replace(".json", "");
+            final_output = final_output + date + "\n";
 
 
-                    String food;
-                    int calorie, carb, sodium;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject row = jsonArray.getJSONObject(i);
-                        food = row.getString("food");
-                        calorie = row.getInt("calorie");
-                        carb = row.getInt("carb");
-                        sodium = row.getInt("sodium");
-                        final_output = final_output + food + " " + String.valueOf(calorie) + " calories " + String.valueOf(carb) + " grams carb " + String.valueOf(sodium) + " mg sodium" + "\n";
-                    }
-
-
-                } catch (FileNotFoundException e) {
-                  e.printStackTrace();
-              } catch (IOException e) {
-                  e.printStackTrace();
-              } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            String food;
+            long calorie, carb, sodium, fats;
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject row = jsonArray.getJSONObject(i);
+                food = row.getString("food");
+                calorie = row.getLong("calorie");
+                carb = row.getLong("carb");
+                sodium = row.getLong("sodium");
+                fats = row.getLong("fats");
+                final_output = final_output + food + " " + String.valueOf(calorie) + " calories " + String.valueOf(carb) + " g carb " + String.valueOf(sodium) + " mg sodium " + String.valueOf(fats) + " g fats" + "\n";
             }
 
 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
         history.setText(final_output);
-
-
-
-
     }
 
     public void onClick(View view) {

@@ -22,7 +22,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:text="Preference"
-        android:layout_marginBottom="0dp"
+        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/restrictions"
         app:layout_constraintStart_toStartOf="parent" />
@@ -31,8 +31,8 @@
         android:id="@+id/history"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="0dp"
         android:text="history"
+        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/selfreport" />
@@ -42,6 +42,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:text="self report"
+        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/history"
         app:layout_constraintEnd_toStartOf="@+id/history"
         app:layout_constraintStart_toEndOf="@+id/restrictions"
@@ -53,6 +54,7 @@
         android:layout_height="100dp"
         android:text="Restriction"
         android:textColorLink="@color/colorAccent"
+        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/selfreport"
         app:layout_constraintStart_toEndOf="@+id/preferences" />

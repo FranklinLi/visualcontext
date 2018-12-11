@@ -28,6 +28,14 @@ public class PreferenceListActivity extends AppCompatActivity implements View.On
         beef.setOnClickListener(this); // calling onClick() method
         Button seafood = findViewById(R.id.button6);
         seafood.setOnClickListener(this);
+        Button Cruciferous = findViewById(R.id.button10);
+        Cruciferous.setOnClickListener(this);
+        Button Marrow = findViewById(R.id.button11);
+        Marrow.setOnClickListener(this);
+        Button Root = findViewById(R.id.button12);
+        Root.setOnClickListener(this);
+
+
     }
 
     public void onClick(View v) {
@@ -54,6 +62,24 @@ public class PreferenceListActivity extends AppCompatActivity implements View.On
             case R.id.button6:
                 intent = new Intent(this, PreferenceLikertScaleActivity.class);
                 message = PreferenceIngredient.SEAFOOD.toString();
+                intent.putExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE, message);
+                startActivity(intent);
+                break;
+            case R.id.button10:
+                intent = new Intent(this, PreferenceLikertScaleActivity.class);
+                message = PreferenceIngredient.MARROW.toString();
+                intent.putExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE, message);
+                startActivity(intent);
+                break;
+            case R.id.button11:
+                intent = new Intent(this, PreferenceLikertScaleActivity.class);
+                message = PreferenceIngredient.ROOT.toString();
+                intent.putExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE, message);
+                startActivity(intent);
+                break;
+            case R.id.button12:
+                intent = new Intent(this, PreferenceLikertScaleActivity.class);
+                message = PreferenceIngredient.CRUCIFEROUS.toString();
                 intent.putExtra(Constants.INGREDIENT_NAME_EXTRA_MESSAGE, message);
                 startActivity(intent);
                 break;

@@ -55,4 +55,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/button10"
+        android:layout_width="420dp"
+        android:layout_height="82dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="316dp"
+        android:text="Cruciferous"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button11"
+        android:layout_width="420dp"
+        android:layout_height="82dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="396dp"
+        android:text="Marrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button12"
+        android:layout_width="420dp"
+        android:layout_height="82dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="476dp"
+        android:text="Root"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

@@ -19,7 +19,14 @@ public enum PreferenceIngredient {
 
     CHICKEN(NEUTRAL),
 
+    CRUCIFEROUS(NEUTRAL),
+
+    MARROW(NEUTRAL),
+
+    ROOT(NEUTRAL),
+
     PORK(NEUTRAL);
+
 
     /**
      * The preference level for the ingredient. Default is neutral

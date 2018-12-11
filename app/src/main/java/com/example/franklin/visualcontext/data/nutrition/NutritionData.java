@@ -28,6 +28,7 @@ public abstract class NutritionData {
         return value + unitType.getUnitAbbreviation();
     }
 
+    public Double toDisplayDouble() {return value;}
     /**
      * Calories data model
      */
