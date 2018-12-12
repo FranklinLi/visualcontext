@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.franklin.visualcontext.data.MetadataTranslation;
 import com.example.franklin.visualcontext.data.restaurant.PreferenceIngredient;
 
 import org.apache.commons.io.IOUtils;
@@ -73,7 +74,10 @@ public class HistoryListActivity extends AppCompatActivity implements View.OnCli
                         total_sodium = total_sodium + sodium;
                         total_fats = total_fats + fats;
                     }
+
                     date_list_only.add(date);
+                    //date = date + " " + MetadataTranslation.jsonToDailyAggregateDisplayString(jsonObject);
+
                     date = date + " total " + total_calorie + " calories " + total_carb + " g carb " + total_sodium + " mg sodium " + total_fats + " g fats";
                     date_list.add(date);
                 } catch (FileNotFoundException e) {

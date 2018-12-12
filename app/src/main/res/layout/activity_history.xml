@@ -10,26 +10,25 @@
     <Button
         android:id="@+id/button2"
         android:layout_width="0dp"
-        android:layout_height="110dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="11dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="3dp"
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/historylist1" />
 
-    <TextView
-        android:id="@+id/textView"
+    <ListView
+        android:id="@+id/historylist1"
         android:layout_width="0dp"
-        android:layout_height="466dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="8dp"
-        android:text="TextView"
+        android:layout_height="504dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="6dp"
         app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
